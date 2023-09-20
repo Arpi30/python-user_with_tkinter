@@ -14,7 +14,7 @@ def db_create():
 
 def create_user(id, name, age, gender, score):
     if not name.get() or not age.get() or gender.get() == "Select you gender" or not score.get():
-        print("Az osszes mezo kitoltese kotelezo")
+        print("All field is mandatory")
         return
 
     curs.execute("INSERT INTO users VALUES (?,?,?,?,?)",
@@ -23,6 +23,17 @@ def create_user(id, name, age, gender, score):
     name.delete(0, 'end')
     age.delete(0, 'end')
     score.delete(0, 'end')
+
+
+def search_user(search_id, table):
+    if not search_id.get():
+        print("Field is mandatory")
+
+    curs.execute("SELECT * FROM users WHERE id = ?", (search_id.get(),))
+    datas = curs.fetchall()
+    table.delete(*table.get_children())
+    table.insert("", "end", values=(datas[0]))
+    search_id.delete(0, 'end')
 
 
 def delete(table):
