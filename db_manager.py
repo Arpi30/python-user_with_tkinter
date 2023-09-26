@@ -1,8 +1,11 @@
 import sqlite3
 from tkinter import *
 import random
+from PIL import Image, ImageTk
+
 conn = None
 curs = None
+img_photo = None
 
 
 def db_create():
@@ -10,17 +13,18 @@ def db_create():
     conn = sqlite3.connect("users.db")
     curs = conn.cursor()
     curs.execute(
-        "CREATE TABLE IF NOT EXISTS users (id INTEGER, name Text, age INTEGER, gender TEXT, score REAL, permission TEXT)")
+        "CREATE TABLE IF NOT EXISTS users (name Text, id INTEGER, age INTEGER, gender TEXT, score REAL, permission TEXT, login INTEGER)")
 
 
 def create_user(name, age, gender, score, permission):
     rand_int = random.randint(1, 1000)
+    login = 1
     if not name.get() or not age.get() or gender.get() == "Select you gender" or not score.get() or permission.get() == "Permission":
         print("All field is mandatory")
         return
 
-    curs.execute("INSERT INTO users VALUES (?,?,?,?,?,?)",
-                 (rand_int, name.get(), age.get(), gender.get(), score.get(), permission.get()))
+    curs.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)",
+                 (name.get(), rand_int, age.get(), gender.get(), score.get(), permission.get(), login))
     conn.commit()
     name.delete(0, 'end')
     age.delete(0, 'end')
@@ -45,21 +49,30 @@ def delete(table):
         print("Nincs kiválasztva elem a törléshez.")
         return
 
-    selected_item_id = table.item(item, "values")[0]
+    selected_item_id = table.item(item, "values")[1]
 
     curs.execute("DELETE FROM users WHERE id = ?", (selected_item_id,))
     table.delete(item)
     conn.commit()
 
 
+def imgShow(img):
+    image = Image.open(img)
+    photo = ImageTk.PhotoImage(image)
+    return photo
+
+
 def db_query(table):
+    global img_photo
     curs.execute("SELECT * FROM users ORDER BY name ASC")
     datas = curs.fetchall()
     table.delete(*table.get_children())
 
     for data in datas:
+        img_photo = imgShow(
+            "logged.png") if data[6] == 1 else imgShow("logout.png")
         table.insert("", "end", values=(
-            data[0], data[1], data[2], data[3], data[4], data[5]))
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photo)
 
 
 def export_to_csv():

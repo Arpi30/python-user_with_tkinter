@@ -1,12 +1,20 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from db_manager import *
-
+from PIL import Image, ImageTk
 
 win = Tk()
-win.geometry("1210x700")
+win.geometry("1260x1000")
 win.title("Users")
 win.resizable(False, False)
+style = ttk.Style()
+style.configure("Treeview", rowheight=35)
+with Image.open("logged.png") as img_log:
+    show_img = ImageTk.PhotoImage(img_log)
+
+
+with Image.open("logged.png") as img_log:
+    show_img = ImageTk.PhotoImage(img_log)
 
 db_create()
 
@@ -46,11 +54,12 @@ search = Entry(win, font="Helvetica 20 bold")
 search.grid(row=6, column=1, columnspan=2)
 
 
-cols = ("id", "Name", "Age", "Gender", "Score", "Permission")
-table = ttk.Treeview(win, columns=cols, show="headings")
+cols = ("Name", "id", "Age", "Gender", "Score", "Permission")
+table = ttk.Treeview(win, columns=cols)
 for col in cols:
     table.heading(col, text=col, anchor='center')
     table.column(col, anchor="center")
+    table.column("#0", width=50, anchor="ne")
 table.grid(row=7, column=0, columnspan=4, padx=5, pady=5)
 
 table.bind("<Double-1>", lambda e: on_double_click(table, e, win))
