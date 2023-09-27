@@ -67,10 +67,9 @@ def db_query(table):
     curs.execute("SELECT * FROM users ORDER BY name ASC")
     datas = curs.fetchall()
     table.delete(*table.get_children())
+    img_photo = imgShow("logged.png")
 
     for data in datas:
-        img_photo = imgShow(
-            "logged.png") if data[6] == 1 else imgShow("logout.png")
         table.insert("", "end", values=(
             data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photo)
 
