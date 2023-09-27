@@ -23,18 +23,21 @@ def registration(username_get, password_get, message):
     
 
 def login(username_get, password_get, message_win, window):
+    uname = username_get.get()
+    password = password_get.get()
 
-    curs.execute("SELECT * FROM registration WHERE username = ? AND password = ?", (username_get.get(), password_get.get(),))
+    curs.execute("SELECT * FROM registration WHERE username = ? AND password = ?", [(uname), (password)])
     datas = curs.fetchall()
-    print(datas)
     
-    if datas and username_get.get() == datas[0][0] and password_get.get() == datas[0][1]:
-
+    if  datas:
         message_win.showinfo(title="Login Successful!", message="You successfully logged in.")
         window.destroy()
         logged_in()
     else:
         message_win.showerror(title="Error", message="Invalid login.")
+        username_get.delete(0, 'end')
+        password_get.delete(0, 'end')
+        
 
 
 
