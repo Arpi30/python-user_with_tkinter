@@ -18,7 +18,7 @@ def db_create():
 
 def create_user(name, age, gender, score, permission):
     rand_int = random.randint(1, 1000)
-    login = 1
+    login = 0
     if not name.get() or not age.get() or gender.get() == "Select you gender" or not score.get() or permission.get() == "Permission":
         print("All field is mandatory")
         return
@@ -63,15 +63,20 @@ def imgShow(img):
 
 
 def db_query(table):
-    global img_photo
     curs.execute("SELECT * FROM users ORDER BY name ASC")
     datas = curs.fetchall()
     table.delete(*table.get_children())
-    img_photo = imgShow("logged.png")
+
+    img_photos = []
 
     for data in datas:
+        img_name = "logged.png" if data[6] == 1 else "logout.png"
+        img_photos.append(imgShow(img_name))
+
+    for i, data in enumerate(datas):
+        print(img_photos[i])
         table.insert("", "end", values=(
-            data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photo)
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photos[i])
 
 
 def export_to_csv():
@@ -139,8 +144,9 @@ def on_entered_pressed(e, table):
     current_values[column_index] = new_text
     table.item(selected_id, values=current_values)
 
+
     curs.execute(
-        f'UPDATE users SET {column_name} = ? WHERE id = ?', (new_text, current_values[0],))
+        f'UPDATE users SET {column_name} = ? WHERE id = ?', (new_text, current_values[1],))
     conn.commit()
     e.widget.destroy()
 

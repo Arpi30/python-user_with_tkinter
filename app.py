@@ -12,12 +12,6 @@ def logged_in():
     style = ttk.Style()
     style.configure("Treeview", rowheight=35)
 
-
-    with Image.open("logged.png") as img_log:
-        show_img = ImageTk.PhotoImage(img_log)
-    with Image.open("logged.png") as img_log:
-        show_img = ImageTk.PhotoImage(img_log)
-
     db_create()
 
     Label(win, text="Name", font="Helvetica 12 bold").grid(
