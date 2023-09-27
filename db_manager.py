@@ -101,7 +101,7 @@ def on_double_click(table, event, win):
         return
     # vissza adja a treeview oszlopat
     column = table.identify_column(event.x)
-    # Ezt a reszt nem ertem annyira, utana kell neznem!
+
     colum_index = int(column[1:]) - 1
 
     # vissza adja egy adott sor id-jat
