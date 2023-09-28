@@ -1,5 +1,6 @@
 import sqlite3
 from tkinter import *
+from tkinter import filedialog
 import random
 from PIL import Image, ImageTk
 
@@ -63,20 +64,16 @@ def imgShow(img):
 
 
 def db_query(table):
+    global img_photo
     curs.execute("SELECT * FROM users ORDER BY name ASC")
     datas = curs.fetchall()
     table.delete(*table.get_children())
 
-    img_photos = []
-
-    for data in datas:
-        img_name = "logged.png" if data[6] == 1 else "logout.png"
-        img_photos.append(imgShow(img_name))
+    img_photo = imgShow("logged.png")
 
     for i, data in enumerate(datas):
-        print(img_photos[i])
         table.insert("", "end", values=(
-            data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photos[i])
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6]), image=img_photo)
 
 
 def export_to_csv():
@@ -97,6 +94,17 @@ def export_to_csv():
             # newline karakter
             data.write("\n")
 
+def import_from_csv():
+    file_path = filedialog.askopenfilename(filetypes=[("user", "*.csv")])
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as datas:
+            read_data = datas.readlines()
+            rows = read_data[1:]
+            for row in rows:
+                cl_row = row.strip().split(";")    #cella tartalmak, pl. cleaned_row[0], cleaned_row[1], st..
+                curs.execute("DELETE FROM users WHERE id = ?", (cl_row[1],))
+                curs.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (cl_row[0], cl_row[1], cl_row[2], cl_row[3], cl_row[4], cl_row[5], cl_row[6],))
+                conn.commit()
 
 def on_double_click(table, event, win):
     # Az identify_region metodus vissza adja a treeview-ban levo pont koordinatait ami egz string lesz, pl: heading, cell, tree, stb..

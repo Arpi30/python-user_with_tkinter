@@ -83,5 +83,8 @@ def logged_in():
     button_logout = Button(win, text="Logout", font="Helvetica 12 bold", command=lambda: system_logout(win))
     button_logout.place(x=1150, y=5)
 
+    open_button = tk.Button(win, text="Open CSV File", command=import_from_csv)
+    open_button.place(x=1150, y=30)
+
     win.mainloop()
     db_close()
