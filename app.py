@@ -80,5 +80,8 @@ def logged_in():
         win, text="Search", font="Helvetica 12 bold", command=lambda: search_user(search, table))
     button_search.grid(row=6, column=3, columnspan=2, pady=10)
 
+    button_logout = Button(win, text="Logout", font="Helvetica 12 bold", command=lambda: system_logout(win))
+    button_logout.place(x=1150, y=5)
+
     win.mainloop()
     db_close()

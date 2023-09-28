@@ -150,6 +150,9 @@ def on_entered_pressed(e, table):
     conn.commit()
     e.widget.destroy()
 
+def system_logout(win):
+    win.destroy()
+
 
 def db_close():
     if conn and curs:
