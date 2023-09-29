@@ -1,15 +1,20 @@
 import tkinter as tk
 from tkinter import ttk
 from db_manager import *
-from PIL import Image, ImageTk
+from tkinter import Menu
+
 
 
 def logged_in():
+
     win = Tk()
+    win.protocol("WM_DELETE_WINDOW",lambda:  db_close(win))
     win.geometry("1260x1000")
+    mainmenu  = Menu(win)
     win.title("Users")
     win.resizable(False, False)
     style = ttk.Style()
+    style.configure("Treeview", rowheight=35)
     style.configure("Treeview", rowheight=35)
 
     db_create()
@@ -56,35 +61,30 @@ def logged_in():
         table.heading(col, text=col, anchor='center')
         table.column(col, anchor="center")
         table.column("#0", width=50, anchor="ne")
-    table.grid(row=7, column=0, columnspan=4, padx=5, pady=5)
+    table.grid(row=7, column=0, columnspan=5, padx=5, pady=5)
 
     table.bind("<Double-1>", lambda e: on_double_click(table, e, win))
+
+    file_menu = Menu(mainmenu, tearoff=0)
+    file_menu.config(bg="grey", fg='white')
+    file_menu.add_command(label="Exit",font="Helvetica 8 bold", activeforeground="grey" , command=lambda: system_logout(win))
+    file_menu.add_command(label="Export to cs", font="Helvetica 8 bold", activeforeground="grey", command=export_to_csv)
+    file_menu.add_command(label="Import CSV", font="Helvetica 8 bold", activeforeground="grey", command=import_from_csv)
+
+    mainmenu.add_cascade(label="Menu", menu=file_menu, font="Helvetica 10")  # Kapcsoljuk össze a "Menu" menüt a főmenüvel
+    mainmenu.add_command(label="Query data", font="Helvetica 10", command=lambda: db_query(table))  # Kapcsoljuk össze a "Menu" menüt a főmenüvel
+    win.config(menu=mainmenu)
 
     insert_button = Button(win, text="Insert data",
                         font="Helvetica 12 bold", command=lambda: create_user(name, age, gender, score, permission))
     insert_button.grid(row=5, column=0)
 
-    query_button = Button(win, text="Query data",
-                        font="Helvetica 12 bold", command=lambda: db_query(table))
-    query_button.grid(row=5, column=1)
-
-    export_csv = Button(win, text="Export to csv",
-                        font="Helvetica 12 bold", command=export_to_csv)
-    export_csv.grid(row=5, column=2)
-
     button_del = Button(win, text="Delete", font="Helvetica 12 bold",
                         command=lambda: delete(table))
-    button_del.grid(row=5, column=3, pady=20)
+    button_del.grid(row=5, column=4, pady=20)
 
     button_search = Button(
         win, text="Search", font="Helvetica 12 bold", command=lambda: search_user(search, table))
-    button_search.grid(row=6, column=3, columnspan=2, pady=10)
-
-    button_logout = Button(win, text="Logout", font="Helvetica 12 bold", command=lambda: system_logout(win))
-    button_logout.place(x=1150, y=5)
-
-    open_button = tk.Button(win, text="Open CSV File", command=import_from_csv)
-    open_button.place(x=1150, y=30)
+    button_search.grid(row=6, column=4,  pady=10)
 
     win.mainloop()
-    db_close()

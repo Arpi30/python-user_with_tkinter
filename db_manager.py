@@ -159,10 +159,13 @@ def on_entered_pressed(e, table):
     e.widget.destroy()
 
 def system_logout(win):
+    curs.execute("UPDATE users SET login = ?",(0,))
+    conn.commit()
     win.destroy()
 
 
-def db_close():
+def db_close(win):
     if conn and curs:
         curs.close()
         conn.close()
+        win.destroy()
